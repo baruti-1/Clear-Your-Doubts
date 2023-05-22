@@ -9,6 +9,14 @@ const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById("chatbot-conversation");
 
+const conversationArray = [
+  {
+    role: "system",
+    content:
+      "You are a highly knowledgeable assistant that is always happy to help.",
+  },
+];
+
 document.addEventListener("submit", (e) => {
   e.preventDefault();
   const userInput = document.getElementById("user-input");
