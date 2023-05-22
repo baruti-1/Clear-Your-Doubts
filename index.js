@@ -26,6 +26,8 @@ document.addEventListener("submit", (e) => {
     content: userInput.value,
   });
 
+  fetchReply();
+
   const newSpeechBubble = document.createElement("div");
   newSpeechBubble.classList.add("speech", "speech-human");
   chatbotConversation.appendChild(newSpeechBubble);
@@ -33,6 +35,14 @@ document.addEventListener("submit", (e) => {
   userInput.value = "";
   chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 });
+
+const fetchReply = async () => {
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: conversationArray,
+  });
+  console.log(response.data.choices[0].message);
+};
 
 function renderTypewriterText(text) {
   const newSpeechBubble = document.createElement("div");
