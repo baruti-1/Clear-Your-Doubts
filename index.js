@@ -20,6 +20,12 @@ const conversationArray = [
 document.addEventListener("submit", (e) => {
   e.preventDefault();
   const userInput = document.getElementById("user-input");
+
+  conversationArray.push({
+    role: "user",
+    content: userInput.value,
+  });
+
   const newSpeechBubble = document.createElement("div");
   newSpeechBubble.classList.add("speech", "speech-human");
   chatbotConversation.appendChild(newSpeechBubble);
