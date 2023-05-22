@@ -40,6 +40,7 @@ const fetchReply = async () => {
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: conversationArray,
+    presence_penalty: 0,
   });
   renderTypewriterText(response.data.choices[0].message.content);
   conversationArray.push(response.data.choices[0].message);
