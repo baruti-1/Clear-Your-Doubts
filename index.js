@@ -41,7 +41,8 @@ const fetchReply = async () => {
     model: "gpt-3.5-turbo",
     messages: conversationArray,
   });
-  console.log(response.data.choices[0].message);
+  renderTypewriterText(response.data.choices[0].message.content);
+  conversationArray.push(response.data.choices[0].message);
 };
 
 function renderTypewriterText(text) {
