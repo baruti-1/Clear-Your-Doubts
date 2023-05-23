@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import { process } from "./env";
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref } from "firebase/database";
+import { getDatabase, ref, push } from "firebase/database";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -20,21 +20,22 @@ const conversationArray = [
   },
 ];
 
-const appSettings = {
-  dbUrl: "https://clear-your-doubts-18eb5-default-rtdb.firebaseio.com/",
+const firebaseConfig = {
+  projectId: "clear-your-doubts-18eb5",
+  databasebURL: "https://clear-your-doubts-18eb5-default-rtdb.firebaseio.com",
 };
 
-const app = initializeApp(appSettings);
+const app = initializeApp(firebaseConfig);
 
-const db = getDatabase(app);
+const database = getDatabase(app);
 
-const conversationDb = ref(db);
+const conversationDb = ref(database);
 
 document.addEventListener("submit", (e) => {
   e.preventDefault();
   const userInput = document.getElementById("user-input");
 
-  conversationArray.push({
+  push(conversationDb, {
     role: "user",
     content: userInput.value,
   });
