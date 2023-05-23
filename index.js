@@ -83,3 +83,22 @@ function renderTypewriterText(text) {
     chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
   }, 50);
 }
+
+function renderConversationFromDb() {
+  get(conversationDb).then(async (snapshot) => {
+    if (snapshot.exists()) {
+      Object.values(snapshot.val()).forEach((dbObj) => {
+        const newSpeechBubble = document.createElement("div");
+        newSpeechBubble.classList.add(
+          "speech",
+          `speech-${dbObj.role === "user" ? "human" : "ai"}`
+        );
+        chatbotConversation.appendChild(newSpeechBubble);
+        newSpeechBubble.textContent = dbObj.content;
+      });
+      chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
+    }
+  });
+}
+
+renderConversationFromDb();
