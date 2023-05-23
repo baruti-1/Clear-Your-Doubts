@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import { process } from "./env";
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push } from "firebase/database";
+import { getDatabase, ref, push, get } from "firebase/database";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,13 +12,11 @@ const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById("chatbot-conversation");
 
-const conversationArray = [
-  {
-    role: "system",
-    content:
-      "You are a highly knowledgeable assistant that is always happy to help.",
-  },
-];
+const instructionObj = {
+  role: "system",
+  content:
+    "You are a highly knowledgeable assistant that is always happy to help.",
+};
 
 const firebaseConfig = {
   projectId: "clear-your-doubts-18eb5",
@@ -50,15 +48,24 @@ document.addEventListener("submit", (e) => {
   chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 });
 
-const fetchReply = async () => {
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: conversationArray,
-    presence_penalty: 0,
-    frequency_penalty: 0.3,
+const fetchReply = () => {
+  get(conversationDb).then(async (snapshot) => {
+    if (snapshot.exists()) {
+      const conversationArray = Object.values(snapshot.val());
+      conversationArray.unshift(instructionObj);
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: conversationArray,
+        presence_penalty: 0,
+        frequency_penalty: 0.3,
+      });
+
+      push(conversationDb, response.data.choices[0].message);
+      renderTypewriterText(response.data.choices[0].message.content);
+    } else {
+      console.log("No data available");
+    }
   });
-  renderTypewriterText(response.data.choices[0].message.content);
-  conversationArray.push(response.data.choices[0].message);
 };
 
 function renderTypewriterText(text) {
