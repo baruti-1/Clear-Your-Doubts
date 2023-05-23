@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import { process } from "./env";
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, get } from "firebase/database";
+import { getDatabase, ref, push, get, remove } from "firebase/database";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -14,8 +14,7 @@ const chatbotConversation = document.getElementById("chatbot-conversation");
 
 const instructionObj = {
   role: "system",
-  content:
-    "You are a highly knowledgeable assistant that is always happy to help.",
+  content: "You are a helpful assistant.",
 };
 
 const firebaseConfig = {
@@ -83,6 +82,12 @@ function renderTypewriterText(text) {
     chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
   }, 50);
 }
+
+document.getElementById("clear-btn").addEventListener("click", () => {
+  remove(conversationDb);
+  chatbotConversation.innerHTML =
+    '<div class="speech speech-ai">How can I help you?</div>';
+});
 
 function renderConversationFromDb() {
   get(conversationDb).then(async (snapshot) => {
