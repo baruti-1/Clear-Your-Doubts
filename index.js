@@ -1,6 +1,9 @@
 import { Configuration, OpenAIApi } from "openai";
 import { process } from "./env";
 
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref } from "firebase/database";
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -16,6 +19,16 @@ const conversationArray = [
       "You are a highly knowledgeable assistant that is always happy to help.",
   },
 ];
+
+const appSettings = {
+  dbUrl: "https://clear-your-doubts-18eb5-default-rtdb.firebaseio.com/",
+};
+
+const app = initializeApp(appSettings);
+
+const db = getDatabase(app);
+
+const conversationDb = ref(db);
 
 document.addEventListener("submit", (e) => {
   e.preventDefault();
