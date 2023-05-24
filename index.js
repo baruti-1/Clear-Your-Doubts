@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi } from "openai";
-import { process } from "./env";
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, get, remove } from "firebase/database";
