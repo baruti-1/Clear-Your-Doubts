@@ -59,7 +59,7 @@ const fetchReply = async () => {
       },
       body: userInput.value,
     });
-    const data = res.json();
+    const data = await res.json();
     console.log(data);
   } catch (error) {
     console.log(error.message);
