@@ -1,13 +1,13 @@
-import { Configuration, OpenAIApi } from "openai";
+// import { Configuration, OpenAIApi } from "openai";
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, get, remove } from "firebase/database";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const configuration = new Configuration({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
-const openai = new OpenAIApi(configuration);
+// const openai = new OpenAIApi(configuration);
 
 const chatbotConversation = document.getElementById("chatbot-conversation");
 
@@ -46,20 +46,38 @@ document.addEventListener("submit", (e) => {
   chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
 });
 
-const fetchReply = () => {
+const fetchReply = async () => {
+  const url =
+    "https://reliable-panda-477942.netlify.app/.netlify/functions/fetchAI";
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "text/plain",
+      },
+      body: userInput,
+    });
+    const data = res.json();
+    console.log(data);
+  } catch (error) {
+    console.log(error.message);
+  }
+
   get(conversationDb).then(async (snapshot) => {
     if (snapshot.exists()) {
       const conversationArray = Object.values(snapshot.val());
       conversationArray.unshift(instructionObj);
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: conversationArray,
-        presence_penalty: 0,
-        frequency_penalty: 0.3,
-      });
 
-      push(conversationDb, response.data.choices[0].message);
-      renderTypewriterText(response.data.choices[0].message.content);
+      // const response = await openai.createChatCompletion({
+      //   model: "gpt-3.5-turbo",
+      //   messages: conversationArray,
+      //   presence_penalty: 0,
+      //   frequency_penalty: 0.3,
+      // });
+
+      // push(conversationDb, response.data.choices[0].message);
+      // renderTypewriterText(response.data.choices[0].message.content);
     } else {
       console.log("No data available");
     }
