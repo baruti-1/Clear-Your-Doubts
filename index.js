@@ -57,7 +57,7 @@ const fetchReply = async () => {
       headers: {
         "content-type": "text/plain",
       },
-      body: userInput,
+      body: userInput.value,
     });
     const data = res.json();
     console.log(data);
