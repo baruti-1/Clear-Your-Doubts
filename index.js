@@ -53,21 +53,21 @@ const fetchReply = async () => {
     });
     const data = await res.json();
     console.log(data);
+
+    get(conversationDb).then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const conversationArray = Object.values(snapshot.val());
+        conversationArray.unshift(instructionObj);
+
+        push(conversationDb, data.reply.choices[0].message);
+        renderTypewriterText(data.reply.choices[0].message.content);
+      } else {
+        console.log("No data available");
+      }
+    });
   } catch (error) {
     console.log(error.message);
   }
-
-  get(conversationDb).then(async (snapshot) => {
-    if (snapshot.exists()) {
-      const conversationArray = Object.values(snapshot.val());
-      conversationArray.unshift(instructionObj);
-
-      push(conversationDb, data.reply.choices[0].message);
-      renderTypewriterText(data.reply.choices[0].message.content);
-    } else {
-      console.log("No data available");
-    }
-  });
 };
 
 function renderTypewriterText(text) {
