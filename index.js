@@ -27,9 +27,10 @@ const database = getDatabase(app);
 
 const conversationDb = ref(database);
 
+const userInput = document.getElementById("user-input");
+
 document.addEventListener("submit", (e) => {
   e.preventDefault();
-  const userInput = document.getElementById("user-input");
 
   push(conversationDb, {
     role: "user",
