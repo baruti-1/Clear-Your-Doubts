@@ -1,3 +1,12 @@
+import { Configuration, OpenAIApi } from "openai";
+import { process } from "./env";
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const openai = new OpenAIApi(configuration);
+
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, get, remove } from "firebase/database";
 
@@ -40,34 +49,22 @@ document.addEventListener("submit", (e) => {
 });
 
 const fetchReply = async () => {
-  const url =
-    "https://reliable-panda-477942.netlify.app/.netlify/functions/fetchAI";
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "content-type": "text/plain",
-      },
-      body: userInput.value,
-    });
-    const data = await res.json();
-    console.log(data);
-
-    get(conversationDb).then(async (snapshot) => {
-      if (snapshot.exists()) {
-        const conversationArray = Object.values(snapshot.val());
-        conversationArray.unshift(instructionObj);
-
-        push(conversationDb, data.reply.choices[0].message);
-        renderTypewriterText(data.reply.choices[0].message.content);
-      } else {
-        console.log("No data available");
-      }
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
+  get(conversationDb).then(async (snapshot) => {
+    if (snapshot.exists()) {
+      const conversationArray = Object.values(snapshot.val());
+      conversationArray.unshift(instructionObj);
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: conversationArray,
+        presence_penalty: 0,
+        frequency_penalty: 0.3,
+      });
+      push(conversationDb, response.data.choices[0].message);
+      renderTypewriterText(response.data.choices[0].message.content);
+    } else {
+      console.log("No data available");
+    }
+  });
 };
 
 function renderTypewriterText(text) {
