@@ -62,15 +62,8 @@ const fetchReply = async () => {
       const conversationArray = Object.values(snapshot.val());
       conversationArray.unshift(instructionObj);
 
-      // const response = await openai.createChatCompletion({
-      //   model: "gpt-3.5-turbo",
-      //   messages: conversationArray,
-      //   presence_penalty: 0,
-      //   frequency_penalty: 0.3,
-      // });
-
-      // push(conversationDb, response.data.choices[0].message);
-      // renderTypewriterText(response.data.choices[0].message.content);
+      push(conversationDb, data.reply.choices[0].message);
+      renderTypewriterText(data.reply.choices[0].message.content);
     } else {
       console.log("No data available");
     }
