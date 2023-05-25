@@ -1,8 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
-//import { process } from "./env.js";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
@@ -32,7 +31,6 @@ const userInput = document.getElementById("user-input");
 
 document.addEventListener("submit", (e) => {
   e.preventDefault();
-
   push(conversationDb, {
     role: "user",
     content: userInput.value,
